@@ -1,0 +1,13 @@
+# first-task.yaml
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: first-task
+  namespace: tekton-blog-demo
+spec:
+  steps:
+    - name: echoing-hello
+      image: alpine
+      command:
+        - /bin/sh
+      args: ['-c', 'echo "hello for your first task"']

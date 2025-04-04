@@ -1,0 +1,9 @@
+# first-task-run.yaml
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: first-task-run-
+  namespace: tekton-blog-demo
+spec:
+  taskRef:
+    name: first-task

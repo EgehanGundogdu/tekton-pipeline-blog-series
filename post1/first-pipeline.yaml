@@ -1,0 +1,15 @@
+# first-pipeline.yaml
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: first-pipeline
+  namespace: tekton-blog-demo
+spec:
+  tasks:
+    - name: echo-first
+      taskRef:
+        name: first-task
+    - name: echo-second
+      taskRef:
+        name: second-task
+      runAfter: [echo-first]

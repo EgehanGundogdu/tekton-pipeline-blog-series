@@ -1,0 +1,9 @@
+# first-pipeline-run.yaml
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: my-first-pipeline-run-
+  namespace: tekton-blog-demo
+spec:
+  pipelineRef:
+    name: first-pipeline
