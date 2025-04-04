@@ -1,0 +1,19 @@
+# trigger-binding.yaml
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: image-build-and-push-trigger-binding
+spec:
+  params:
+    - name: repository_url
+      value: $(body.repository_url)
+    - name: git_revision
+      value: $(body.git_revision)
+    - name: app_version
+      value: $(body.app_version)
+    - name: image_push_addr
+      value: $(body.image_push_addr)
+    - name: image_build_context
+      value: $(body.image_build_context)
+    - name: dockerfile_path
+      value: $(body.dockerfile_path)

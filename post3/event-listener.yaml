@@ -1,0 +1,13 @@
+# event-listener.yaml
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: image-build-and-push-event-listener
+spec:
+  serviceAccountName: tekton-triggers-admin-sa
+  triggers:
+    - name: image-build-and-push-trigger
+      bindings:
+        - ref: image-build-and-push-trigger-binding
+      template:
+        ref: image-build-and-push-trigger-template

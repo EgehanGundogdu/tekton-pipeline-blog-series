@@ -1,0 +1,49 @@
+# trigger-template.yaml
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: image-build-and-push-trigger-template
+spec:
+  params:
+    - name: repository_url
+    - name: git_revision
+    - name: image_push_addr
+    - name: app_version
+    - name: dockerfile_path
+    - name: image_build_context
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: image-build-and-push-pipeline-run-
+      spec:
+        pipelineRef:
+          name: image-build-and-push
+        podTemplate:
+          securityContext:
+            fsGroup: 65532
+        workspaces:
+          - name: pipeline-workspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+          - name: docker-credentials
+            secret:
+              secretName: docker-credentials
+        params:
+          - name: repo-url
+            value: "$(tt.params.repository_url)"
+          - name: revision
+            value: "$(tt.params.git_revision)"
+          - name: IMAGE
+            value: "$(tt.params.image_push_addr)"
+          - name: DOCKERFILE
+            value: "$(tt.params.dockerfile_path)"
+          - name: CONTEXT
+            value: "$(tt.params.image_build_context)"
+          - name: APP_VERSION
+            value: "$(tt.params.app_version)"
