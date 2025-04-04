@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: image-build-and-push-pipeline-run-
+spec:
+  pipelineRef:
+    name: image-build-and-push
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+    - name: pipeline-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    - name: docker-credentials
+      secret:
+        secretName: docker-credentials
+  
+  params:
+    - name: repo-url
+      value: "https://github.com/EgehanGundogdu/tekton-pipeline-blog-series"
+    - name: "revision"
+      value: "main"
+    - name: IMAGE
+      value: "docker.io/egundogdu/tekton-blog-series-flask-app"
+    - name: DOCKERFILE
+      value: "./Dockerfile"
+    - name: CONTEXT
+      value: "."
+    - name: APP_VERSION
+      value: "0.0.1"

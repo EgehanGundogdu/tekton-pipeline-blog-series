@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: image-build-and-push
+spec:
+  params:
+    - name: repo-url
+      type: string
+    - name: revision
+      type: string
+    - name: IMAGE
+      type: string
+    - name: DOCKERFILE
+      type: string
+    - name: CONTEXT
+      type: string
+    - name: APP_VERSION
+      type: string
+  workspaces:
+    - name: pipeline-workspace
+    - name: docker-credentials
+  tasks:
+    - name: fetch-repository
+      params:
+        - name: url
+          value: "$(params.repo-url)"
+        - name: revision
+          value: "$(params.revision)"
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: pipeline-workspace
+
+    - name: build-push
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: "$(params.IMAGE):$(params.APP_VERSION)"
+        - name: DOCKERFILE
+          value: "$(params.DOCKERFILE)"
+        - name: CONTEXT
+          value: "$(params.CONTEXT)"
+        - name: EXTRA_ARGS
+          value:
+            - "--build-arg=APP_VERSION=$(params.APP_VERSION)"
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+        - name: dockerconfig
+          workspace: docker-credentials
